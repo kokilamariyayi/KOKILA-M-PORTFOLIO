@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowDown, User, Code, Award, Lightbulb } from 'lucide-react';
-import { ParticleCanvas } from '@/components/ParticleCanvas';
+import { AnalyticsBackground } from '@/components/AnalyticsBackground';
 
 import { AnimatedSection } from '@/components/AnimatedSection';
 import { PageTransition } from '@/components/PageTransition';
@@ -58,7 +58,7 @@ const Index = () => {
     <PageTransition>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <ParticleCanvas />
+        <AnalyticsBackground />
         
 
         {/* Gradient mesh overlay */}
