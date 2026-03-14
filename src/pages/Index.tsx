@@ -140,6 +140,15 @@ const Index = () => {
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="py-16 md:py-24">
+        <div className="container mx-auto px-6">
+          <AnimatedSection>
+            <StatsCounter />
+          </AnimatedSection>
+        </div>
+      </section>
+
       {/* CTA Section */}
       <section className="py-24 text-center">
         <div className="container mx-auto px-6">

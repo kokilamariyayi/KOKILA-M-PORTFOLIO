@@ -189,15 +189,10 @@ const Resume = () => {
           </AnimatedSection>
 
           <AnimatedSection delay={0.5}>
-            <div className="p-5 rounded-xl bg-card border border-border mb-12">
-              <ul className="space-y-2">
-                {certifications.map((cert) => (
-                  <li key={cert} className="text-muted-foreground text-sm leading-relaxed flex items-start gap-2">
-                    <span className="text-primary mt-1.5 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
-                    {cert}
-                  </li>
-                ))}
-              </ul>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 justify-items-center mb-12">
+              {certifications.map((cert) => (
+                <FlipCertCard key={cert.name} cert={cert} />
+              ))}
             </div>
           </AnimatedSection>
 
