@@ -57,9 +57,6 @@ const Index = () => {
     <PageTransition>
       {/* Hero Section */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <AnalyticsBackground />
-        
-
         {/* Gradient mesh overlay */}
         <div className="absolute inset-0 bg-gradient-mesh" aria-hidden="true" />
 
