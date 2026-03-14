@@ -16,7 +16,6 @@ const CountUp = ({ target }: { target: number }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!active) return;
     const duration = 1500;
     const start = performance.now();
     let raf: number;
@@ -30,7 +29,7 @@ const CountUp = ({ target }: { target: number }) => {
 
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [active, target]);
+  }, [target]);
 
   return <>{count}</>;
 };
