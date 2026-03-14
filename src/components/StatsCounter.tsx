@@ -12,7 +12,7 @@ function easeOut(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-const CountUp = ({ target, active }: { target: number; active: boolean }) => {
+const CountUp = ({ target }: { target: number }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
