@@ -12,16 +12,17 @@ function easeOut(t: number) {
   return 1 - Math.pow(1 - t, 3);
 }
 
-const CountUp = ({ target }: { target: number }) => {
+const CountUp = ({ target, start }: { target: number; start: boolean }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
+    if (!start) { setCount(0); return; }
     const duration = 1500;
-    const start = performance.now();
+    const startTime = performance.now();
     let raf: number;
 
     const step = (now: number) => {
-      const elapsed = now - start;
+      const elapsed = now - startTime;
       const progress = Math.min(elapsed / duration, 1);
       setCount(Math.round(easeOut(progress) * target));
       if (progress < 1) raf = requestAnimationFrame(step);
@@ -29,15 +30,28 @@ const CountUp = ({ target }: { target: number }) => {
 
     raf = requestAnimationFrame(step);
     return () => cancelAnimationFrame(raf);
-  }, [target]);
+  }, [target, start]);
 
   return <>{count}</>;
 };
 
 export const StatsCounter = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.isIntersecting),
+      { threshold: 0.3 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+    <div ref={ref} className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
       {stats.map((s) => (
         <div
           key={s.label}
@@ -46,7 +60,7 @@ export const StatsCounter = () => {
         >
           <s.icon className="h-5 w-5 text-primary mb-2" />
           <span className="text-[32px] font-heading font-bold leading-none">
-            <CountUp target={s.value} />
+            <CountUp target={s.value} start={visible} />
           </span>
           <span className="text-[12px] text-muted-foreground mt-1.5 tracking-wide uppercase">
             {s.label}

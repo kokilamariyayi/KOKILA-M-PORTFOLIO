@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
 import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -11,19 +10,19 @@ import {
 } from '@/components/ui/sheet';
 
 const navLinks = [
-  { label: 'Home', path: '/' },
-  { label: 'Projects', path: '/projects' },
-  { label: 'Skills', path: '/skills' },
-  { label: 'Resume', path: '/resume' },
-  
-  { label: 'Profiles', path: '/profiles' },
-  { label: 'Contact', path: '/contact' },
+  { label: 'Home', id: 'hero' },
+  { label: 'About', id: 'about' },
+  { label: 'Skills', id: 'skills' },
+  { label: 'Projects', id: 'projects' },
+  { label: 'Profiles', id: 'profiles' },
+  { label: 'Resume', id: 'resume' },
+  { label: 'Contact', id: 'contact' },
 ];
 
 export const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
-  const location = useLocation();
+  const [activeId, setActiveId] = useState('hero');
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 50);
@@ -31,7 +30,32 @@ export const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isActive = (path: string) => location.pathname === path;
+  // Intersection Observer for active section
+  useEffect(() => {
+    const ids = navLinks.map((l) => l.id);
+    const observers: IntersectionObserver[] = [];
+
+    ids.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveId(id);
+        },
+        { rootMargin: '-40% 0px -55% 0px' }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, []);
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+    setOpen(false);
+  };
 
   return (
     <header
@@ -43,28 +67,26 @@ export const Navbar = () => {
       )}
     >
       <nav className="container mx-auto px-6 h-16 flex items-center justify-between">
-        <Link
-          to="/"
+        <button
+          onClick={() => scrollTo('hero')}
           className="text-xl font-bold font-heading bg-gradient-to-r from-[hsl(175,70%,50%)] to-[hsl(45,90%,60%)] bg-clip-text text-transparent"
         >
           KM
-        </Link>
+        </button>
 
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
           {navLinks.map((link) => (
-            <Link
-              key={link.path}
-              to={link.path}
+            <button
+              key={link.id}
+              onClick={() => scrollTo(link.id)}
               className={cn(
-                'text-sm transition-colors duration-200 hover:text-foreground',
-                isActive(link.path)
-                  ? 'text-primary'
-                  : 'text-muted-foreground'
+                'text-sm transition-colors duration-200 hover:text-foreground bg-transparent border-none cursor-pointer',
+                activeId === link.id ? 'text-primary' : 'text-muted-foreground'
               )}
             >
               {link.label}
-            </Link>
+            </button>
           ))}
         </div>
 
@@ -82,19 +104,18 @@ export const Navbar = () => {
             <SheetTitle className="sr-only">Navigation</SheetTitle>
             <nav className="flex flex-col gap-6 mt-8">
               {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  onClick={() => setOpen(false)}
+                <button
+                  key={link.id}
+                  onClick={() => scrollTo(link.id)}
                   className={cn(
-                    'text-lg transition-colors',
-                    isActive(link.path)
+                    'text-lg transition-colors text-left bg-transparent border-none cursor-pointer',
+                    activeId === link.id
                       ? 'text-primary'
                       : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
                   {link.label}
-                </Link>
+                </button>
               ))}
             </nav>
           </SheetContent>
