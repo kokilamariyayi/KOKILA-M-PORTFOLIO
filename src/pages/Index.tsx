@@ -394,21 +394,9 @@ const Index = () => {
             <h2 className="text-3xl md:text-4xl font-heading font-bold mb-4">Skills</h2>
             <p className="text-muted-foreground max-w-lg mb-12">Technologies and tools I use to bring ideas to life.</p>
           </AnimatedSection>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-5xl">
-            {skillCategories.map((category, catIndex) => (
-              <AnimatedSection key={category.title} delay={catIndex * 0.15}>
-                <div className="p-6 rounded-xl bg-card border border-border">
-                  <div className="flex items-center gap-3 mb-6">
-                    <category.icon className="h-6 w-6 text-primary" />
-                    <h3 className="text-xl font-heading font-semibold">{category.title}</h3>
-                  </div>
-                  <div className="space-y-5">
-                    {category.skills.map((skill, i) => (
-                      <SkillBar key={skill.name} name={skill.name} level={skill.level} delay={catIndex * 0.15 + i * 0.08} />
-                    ))}
-                  </div>
-                </div>
-              </AnimatedSection>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+            {skills.map((skill, i) => (
+              <SkillRingCard key={skill.name} name={skill.name} level={skill.level} category={skill.category} delay={i * 0.06} />
             ))}
           </div>
         </div>
