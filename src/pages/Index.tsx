@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { AnimatedSection } from '@/components/AnimatedSection';
 import { PageTransition } from '@/components/PageTransition';
 import { StatsCounter } from '@/components/StatsCounter';
-import { SkillBar } from '@/components/SkillBar';
+import { SkillRingCard } from '@/components/SkillRingCard';
 import { ProjectCard } from '@/components/ProjectCard';
 import { FlipCertCard } from '@/components/FlipCertCard';
 import { Button } from '@/components/ui/button';
