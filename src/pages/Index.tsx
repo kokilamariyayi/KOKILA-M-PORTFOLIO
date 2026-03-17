@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { motion } from 'framer-motion';
+import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
 import {
   ArrowDown, User, Code, Award, Lightbulb,
   Brain, Database, Wrench,
@@ -150,6 +150,98 @@ const BadgeCard = ({ badge, index }: { badge: BadgeData; index: number }) => {
   );
 };
 
+/* ─── ProfilePhoto ─── */
+
+const ProfilePhoto = () => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [12, -12]), { stiffness: 150, damping: 20 });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-12, 12]), { stiffness: 150, damping: 20 });
+
+  const handleMouse = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+  const handleLeave = () => { mouseX.set(0); mouseY.set(0); };
+
+  return (
+    <motion.div
+      ref={cardRef}
+      onMouseMove={handleMouse}
+      onMouseLeave={handleLeave}
+      style={{ rotateX, rotateY, transformPerspective: 800 }}
+      className="relative flex items-center justify-center w-72 h-72 md:w-80 md:h-80 lg:w-96 lg:h-96 cursor-pointer"
+    >
+      {/* Aurora blob */}
+      <div
+        className="aurora-blob absolute inset-0 scale-125"
+        style={{ background: 'radial-gradient(ellipse, hsl(262 83% 65% / 0.30) 0%, transparent 70%)' }}
+      />
+      {/* Spinning ring */}
+      <div className="photo-ring absolute inset-0" />
+      {/* Inner dark circle + photo */}
+      <div className="absolute inset-[3px] rounded-full overflow-hidden bg-card flex items-center justify-center">
+        <img
+          src="/profile.jpg"
+          alt="Kokila M"
+          className="w-full h-full object-cover object-center"
+          onError={(e) => {
+            // Fallback: replace with avatar placeholder
+            const t = e.currentTarget;
+            t.style.display = 'none';
+            const p = t.parentElement;
+            if (p && !p.querySelector('.avatar-fallback')) {
+              const el = document.createElement('div');
+              el.className = 'avatar-fallback w-full h-full flex items-center justify-center';
+              el.style.cssText = 'background: linear-gradient(135deg, hsl(262 83% 20%), hsl(240 18% 15%)); font-size: 6rem; color: hsl(262 83% 65%);';
+              el.textContent = '🧑‍💻';
+              p.appendChild(el);
+            }
+          }}
+        />
+      </div>
+      {/* Orbiting emerald dot */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ animation: 'orbit 8s linear infinite' }}>
+        <div className="w-3 h-3 rounded-full" style={{ background: 'hsl(158 64% 52%)', boxShadow: '0 0 10px hsl(158 64% 52%)' }} />
+      </div>
+      {/* Second orbit — violet dot */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ animation: 'orbit-reverse 12s linear infinite' }}>
+        <div className="w-2 h-2 rounded-full" style={{ background: 'hsl(262 83% 75%)', boxShadow: '0 0 8px hsl(262 83% 65%)' }} />
+      </div>
+      {/* Floating skill chip */}
+      <motion.div
+        animate={{ y: [0, -8, 0] }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        className="absolute -bottom-4 -right-2 md:-right-6 px-3 py-1.5 rounded-full text-xs font-mono font-semibold backdrop-blur-md border"
+        style={{
+          background: 'hsl(262 83% 65% / 0.15)',
+          borderColor: 'hsl(262 83% 65% / 0.4)',
+          color: 'hsl(262 83% 75%)',
+          boxShadow: '0 0 16px hsl(262 83% 65% / 0.2)',
+        }}
+      >
+        ✦ AI &amp; ML Engineer
+      </motion.div>
+      <motion.div
+        animate={{ y: [0, 8, 0] }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+        className="absolute -top-4 -left-2 md:-left-6 px-3 py-1.5 rounded-full text-xs font-mono font-semibold backdrop-blur-md border"
+        style={{
+          background: 'hsl(158 64% 52% / 0.15)',
+          borderColor: 'hsl(158 64% 52% / 0.4)',
+          color: 'hsl(158 64% 60%)',
+          boxShadow: '0 0 16px hsl(158 64% 52% / 0.2)',
+        }}
+      >
+        ⬡ Data Analyst
+      </motion.div>
+    </motion.div>
+  );
+};
+
 /* ─── Page ─── */
 
 const Index = () => {
@@ -197,23 +289,71 @@ const Index = () => {
       {/* ═══ HERO ═══ */}
       <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-mesh" aria-hidden="true" />
-        <div className="container relative z-10 px-6 text-center flex flex-col items-center">
-          <motion.div variants={reducedMotion ? {} : containerVariants} initial="hidden" animate="visible" className="max-w-xl">
-            <motion.p variants={itemVariants} className="text-primary font-mono text-sm tracking-widest uppercase mb-4">Hello, I'm</motion.p>
-            <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-heading font-bold tracking-tight">
-              <span className="text-gradient-primary">Kokila M</span>
-            </motion.h1>
-            <motion.p variants={itemVariants} className="text-lg md:text-xl text-muted-foreground mt-4 max-w-xl">Aspiring AI & ML Engineer</motion.p>
-            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center mt-8">
-              <Button variant="glow" size="lg" asChild><a href="#contact">Hire Me</a></Button>
-              <Button variant="outline" size="lg" asChild><a href="#projects">View Projects</a></Button>
+        {/* Extra subtle aurora in top-right */}
+        <div
+          className="aurora-blob absolute -top-20 right-0 w-[500px] h-[500px] pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse, hsl(262 83% 65% / 0.12) 0%, transparent 70%)' }}
+          aria-hidden="true"
+        />
+        <div className="container relative z-10 px-6">
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20 max-w-6xl mx-auto">
+            {/* ── Text side ── */}
+            <motion.div
+              variants={reducedMotion ? {} : containerVariants}
+              initial="hidden"
+              animate="visible"
+              className="flex-1 text-center lg:text-left"
+            >
+              <motion.p variants={itemVariants} className="text-primary font-mono text-sm tracking-widest uppercase mb-4">
+                Hello, I'm
+              </motion.p>
+              <motion.h1 variants={itemVariants} className="text-5xl sm:text-6xl md:text-7xl font-heading font-bold tracking-tight mb-4">
+                <span className="text-shine">Kokila M</span>
+              </motion.h1>
+              <motion.p variants={itemVariants} className="text-lg md:text-xl text-muted-foreground mb-2 max-w-lg mx-auto lg:mx-0">
+                Aspiring <span className="text-primary font-semibold">AI &amp; ML Engineer</span> &amp; Data Analyst
+              </motion.p>
+              <motion.p variants={itemVariants} className="text-sm text-muted-foreground/70 mb-8 max-w-md mx-auto lg:mx-0 leading-relaxed">
+                Building intelligent systems with Python, NLP &amp; LLMs — turning data into decisions.
+              </motion.p>
+              <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <Button variant="glow" size="lg" asChild>
+                  <a href="#contact">Hire Me</a>
+                </Button>
+                <Button variant="outline" size="lg" asChild>
+                  <a href="#projects">View Projects</a>
+                </Button>
+              </motion.div>
+              {/* Mini stats row */}
+              <motion.div variants={itemVariants} className="flex gap-8 mt-10 justify-center lg:justify-start">
+                {[['6+', 'Projects'], ['3', 'Internships'], ['8', 'Certifications']].map(([num, label]) => (
+                  <div key={label} className="text-center lg:text-left">
+                    <div className="text-2xl font-heading font-bold text-gradient-primary">{num}</div>
+                    <div className="text-xs text-muted-foreground">{label}</div>
+                  </div>
+                ))}
+              </motion.div>
             </motion.div>
-          </motion.div>
+            {/* ── Photo side ── */}
+            <motion.div
+              initial={reducedMotion ? {} : { opacity: 0, x: 40 }}
+              animate={reducedMotion ? {} : { opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="flex-none flex items-center justify-center"
+            >
+              <ProfilePhoto />
+            </motion.div>
+          </div>
         </div>
-        <motion.div className="absolute bottom-8 left-1/2 -translate-x-1/2" animate={reducedMotion ? {} : { y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2"
+          animate={reducedMotion ? {} : { y: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+        >
           <ArrowDown className="h-5 w-5 text-muted-foreground" />
         </motion.div>
       </section>
+
 
       {/* ═══ ABOUT ═══ */}
       <section id="about" className="py-24 md:py-32 scroll-mt-20">

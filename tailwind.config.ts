@@ -101,6 +101,26 @@ export default {
           "0%, 100%": { opacity: "0.3", transform: "translateY(0)" },
           "50%": { opacity: "1", transform: "translateY(8px)" },
         },
+        orbit: {
+          "0%": { transform: "rotate(0deg) translateX(78px) rotate(0deg)" },
+          "100%": { transform: "rotate(360deg) translateX(78px) rotate(-360deg)" },
+        },
+        "orbit-reverse": {
+          "0%": { transform: "rotate(0deg) translateX(95px) rotate(0deg)" },
+          "100%": { transform: "rotate(-360deg) translateX(95px) rotate(360deg)" },
+        },
+        "ring-spin": {
+          "0%": { transform: "rotate(0deg)" },
+          "100%": { transform: "rotate(360deg)" },
+        },
+        "aurora-pulse": {
+          "0%, 100%": { opacity: "0.15", transform: "scale(1)" },
+          "50%": { opacity: "0.35", transform: "scale(1.08)" },
+        },
+        shine: {
+          "0%": { backgroundPosition: "-200% center" },
+          "100%": { backgroundPosition: "200% center" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -110,6 +130,11 @@ export default {
         "fade-in-up": "fade-in-up 0.5s ease-out",
         shimmer: "shimmer 3s ease-in-out infinite",
         "scroll-hint": "scroll-hint 2s ease-in-out infinite",
+        orbit: "orbit 8s linear infinite",
+        "orbit-reverse": "orbit-reverse 12s linear infinite",
+        "ring-spin": "ring-spin 20s linear infinite",
+        "aurora-pulse": "aurora-pulse 5s ease-in-out infinite",
+        shine: "shine 4s linear infinite",
       },
     },
   },
