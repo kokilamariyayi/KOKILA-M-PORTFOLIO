@@ -35,10 +35,22 @@ const storyItems = [
   { icon: Lightbulb, title: 'How I Think', description: 'Every dataset tells a story. I approach problems with analytical thinking and visualization skills to derive meaningful insights and support data-driven decisions.' },
 ];
 
-const skillCategories = [
-  { title: 'AI & ML', icon: Brain, skills: [{ name: 'NLP', level: 85 }, { name: 'LLM', level: 80 }, { name: 'RAG', level: 78 }, { name: 'Prompt Engineering', level: 88 }, { name: 'Agentic AI', level: 75 }] },
-  { title: 'Data & Backend', icon: Database, skills: [{ name: 'Python', level: 90 }, { name: 'SQL', level: 85 }, { name: 'REST API', level: 80 }, { name: 'AWS', level: 72 }, { name: 'Dashboard Development', level: 85 }] },
-  { title: 'Tools & DevOps', icon: Wrench, skills: [{ name: 'Git', level: 85 }, { name: 'Power BI', level: 82 }, { name: 'IBM AutoAI', level: 75 }, { name: 'TensorFlow', level: 70 }, { name: 'Web Development', level: 75 }] },
+const skills = [
+  { name: 'NLP', level: 85, category: 'ML' },
+  { name: 'LLM', level: 80, category: 'ML' },
+  { name: 'RAG', level: 78, category: 'ML' },
+  { name: 'Prompt Eng.', level: 88, category: 'ML' },
+  { name: 'Agentic AI', level: 75, category: 'ML' },
+  { name: 'Python', level: 90, category: 'Languages' },
+  { name: 'SQL', level: 85, category: 'Languages' },
+  { name: 'REST API', level: 80, category: 'Tools' },
+  { name: 'AWS', level: 72, category: 'Cloud' },
+  { name: 'Dashboards', level: 85, category: 'Tools' },
+  { name: 'Git', level: 85, category: 'Tools' },
+  { name: 'Power BI', level: 82, category: 'Tools' },
+  { name: 'IBM AutoAI', level: 75, category: 'Cloud' },
+  { name: 'TensorFlow', level: 70, category: 'ML' },
+  { name: 'Web Dev', level: 75, category: 'Tools' },
 ];
 
 const projects = [
